@@ -1,2 +1,8 @@
 .git/
 venv/
+__pycache__/
+*.pyc
+*.log
+app/static/uploads/*
+app/static/results/*
+test_result_integration.jpg

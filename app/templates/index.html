@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hydro-Net: Canal Routing</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="number"], select, input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .btn {
+            display: inline-block;
+            background: #3498db;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .btn:hover {
+            background: #2980b9;
+        }
+        .results {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+        .result-box {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .result-box img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        .error {
+            color: #e74c3c;
+            background: #fdeaea;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .coords-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Hydro-Net Geospatial AI</h1>
+        <p style="text-align: center;">Optimal canal routing using satellite imagery.</p>
+
+        {% if error %}
+        <div class="error">{{ error }}</div>
+        {% endif %}
+
+        <form action="/" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="file">Upload Satellite Image (JPG)</label>
+                <input type="file" name="file" id="file" accept=".jpg,.jpeg">
+            </div>
+
+            <div class="coords-grid">
+                <div class="form-group">
+                    <label>Start Point (X, Y)</label>
+                    <div style="display: flex; gap: 5px;">
+                        <input type="number" name="start_x" value="50" placeholder="X">
+                        <input type="number" name="start_y" value="50" placeholder="Y">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Goal Point (X, Y)</label>
+                    <div style="display: flex; gap: 5px;">
+                        <input type="number" name="goal_x" value="200" placeholder="X">
+                        <input type="number" name="goal_y" value="200" placeholder="Y">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="method">Segmentation Method</label>
+                <select name="method" id="method">
+                    <option value="model">Deep Learning Model (U-Net)</option>
+                    <option value="ndwi">NDWI (Spectral Index)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="algo">Pathfinding Algorithm</label>
+                <select name="algo" id="algo">
+                    <option value="a_star">A* Search</option>
+                    <option value="dijkstra">Dijkstra's Algorithm</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn">Process and Find Route</button>
+        </form>
+
+        {% if original_img %}
+        <div class="results">
+            <div class="result-box">
+                <h3>Original Image</h3>
+                <img src="{{ original_img }}" alt="Original Image">
+            </div>
+            <div class="result-box">
+                <h3>Routing Result</h3>
+                <img src="{{ result_img }}" alt="Result Image">
+                {% if not path_found %}
+                <p style="color: red;">No path could be found between the points.</p>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
